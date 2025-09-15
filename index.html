@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Oak Grove ELA — Student Portal (Arcade Hub)</title>
+<style>
+  :root{
+    --bg:#f5f7fb; --card:#ffffff; --accent:#2b6cb0; --muted:#6b7280; --danger:#b91c1c;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:Inter, "Segoe UI", Arial, sans-serif;
+    background: linear-gradient(180deg,#eef2ff 0%, #f8fafc 100%);
+    color:#0f172a; min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:28px;
+  }
+  .container{width:100%;max-width:1060px}
+  header{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+  header img{width:58px;height:58px;border-radius:8px}
+  h1{font-size:1.5rem;margin:0}
+  p.lead{margin:0;color:var(--muted)}
+  /* passbox */
+  #passbox{margin-top:12px;background:var(--card);padding:14px;border-radius:10px;box-shadow:0 8px 24px rgba(2,6,23,.04);display:flex;gap:8px;align-items:center}
+  input{padding:10px;border-radius:8px;border:1px solid #e6eef8;width:220px}
+  button{background:var(--accent);color:white;border:none;padding:10px 12px;border-radius:8px;cursor:pointer;font-weight:600}
+  button.alt{background:transparent;color:var(--accent);border:1px solid rgba(43,108,176,0.12)}
+  .muted{color:var(--muted);font-size:.95rem}
+  /* content */
+  #content{display:none;margin-top:16px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+  .card{background:var(--card);padding:16px;border-radius:12px;box-shadow:0 10px 30px rgba(2,6,23,.04)}
+  .card h3{margin:0 0 8px}
+  .btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .small{font-size:.9rem;padding:8px 10px;border-radius:8px;border:none;background:#f1f5f9;cursor:pointer}
+  /* tic-tac-toe */
+  .ttt-board{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;justify-items:center}
+  .ttt-board button{width:64px;height:64px;font-size:1.3rem;border-radius:8px;border:1px solid #e6eef8;background:transparent;cursor:pointer}
+  /* admin */
+  #adminBtn{position:fixed;top:16px;right:16px;display:none;background:transparent;border:1px solid rgba(15,23,42,.06);padding:8px;border-radius:8px;cursor:pointer}
+  #secretButtonDiv{display:none}
+  /* admin editor */
+  textarea{width:100%;min-height:120px;border-radius:8px;border:1px solid #e6eef8;padding:10px;font-family:monospace}
+  .admin-panel{display:flex;gap:12px;flex-direction:column}
+  .previewWrap{border:1px solid #e6eef8;border-radius:8px;overflow:hidden;background:#fff;padding:6px}
+  footer{margin-top:18px;color:var(--muted);font-size:.85rem}
+  @media (max-width:600px){input{width:140px}}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 24 24'><rect rx='4' width='24' height='24' fill='%232b6cb0'/><text x='12' y='15' font-size='10' font-family='Arial' fill='white' text-anchor='middle'>ELA</text></svg>" alt="ELA logo">
+    <div>
+      <h1>Oak Grove ELA — Student Portal</h1>
+      <p class="lead">Reading modules • vocabulary practice • interactive activities</p>
+    </div>
+  </header>
+
+  <!-- PASSCODE -->
+  <div id="passbox" aria-hidden="false">
+    <label for="pass" class="muted">Enter class passcode:</label>
+    <input id="pass" type="password" placeholder="Passcode" />
+    <button id="enterBtn">Enter</button>
+    <button id="helpBtn" class="alt">Help</button>
+    <div id="passMsg" style="margin-left:12px;color:#d14343;min-width:160px"></div>
+  </div>
+
+  <!-- MAIN CONTENT (hidden until passcode) -->
+  <div id="content" aria-hidden="true">
+    <h2 style="margin-top:12px">Student Dashboard</h2>
+    <p class="muted">Choose a module or activity.</p>
+
+    <div class="grid" style="margin-top:12px">
+      <!-- Reading Module -->
+      <div class="card">
+        <h3>Reading Module: Short Story</h3>
+        <p class="muted">Practice reading fluency and comprehension.</p>
+        <div class="btn-row">
+          <button class="small" onclick="alert('Open reading passage — demo')">Open</button>
+          <button class="small" onclick="alert('Start quiz — demo')">Quiz</button>
+        </div>
+      </div>
+
+      <!-- Interactive Activities (Arcade Hub) -->
+      <div class="card">
+        <h3>Interactive Activities</h3>
+        <p class="muted">A collection of short browser activities framed for learning.</p>
+        <div class="btn-row">
+          <button class="small" onclick="openArcade()">Open Activities</button>
+        </div>
+        <p class="muted" style="margin-top:8px;font-size:.85rem">Activities open in a student-friendly window.</p>
+      </div>
+
+      <!-- Poxel / Driving / Roblox Links -->
+      <div class="card">
+        <h3>External Interactive Links</h3>
+        <p class="muted">Group multiplayer or practice drills (external sites).</p>
+        <div class="btn-row">
+          <a href="https://poxel.io/" target="_blank"><button class="small">Poxel.io</button></a>
+          <a href="https://www.crazygames.com/t/driving" target="_blank"><button class="small">Driving Games</button></a>
+          <a href="https://www.roblox.com/games" target="_blank"><button class="small">Roblox</button></a>
+        </div>
+      </div>
+
+      <!-- Mini-games inline -->
+      <div class="card">
+        <h3>Logic Puzzles</h3>
+        <p class="muted">Short puzzles for warm-ups.</p>
+        <div id="ticWrap">
+          <div id="ticTacToeBoard" class="ttt-board" aria-label="tic tac toe"></div>
+          <div class="btn-row" style="margin-top:8px">
+            <button id="resetTttBtn" class="small">Reset</button>
+          </div>
+        </div>
+        <hr style="margin:12px 0;border:none;border-top:1px solid #f1f5f9">
+        <div>
+          <div class="btn-row">
+            <button class="small" onclick="playRPS('rock')">Rock</button>
+            <button class="small" onclick="playRPS('paper')">Paper</button>
+            <button class="small" onclick="playRPS('scissors')">Scissors</button>
+          </div>
+          <p id="rpsResult" class="muted" style="margin-top:8px"></p>
+        </div>
+      </div>
+
+      <!-- YouTube lesson -->
+      <div class="card">
+        <h3>Lesson Video</h3>
+        <p class="muted">Watch a quick lesson on main idea.</p>
+        <iframe width="100%" height="170" src="https://www.youtube.com/embed/T2v1k_xJ3X0" style="border-radius:8px;border:none"></iframe>
+      </div>
+
+      <!-- Admin console card (revealed only to admin) -->
+      <div class="card" id="secretButtonDiv">
+        <h3>Teacher Console</h3>
+        <p class="muted">Admin-only tools: preview injected code, and simulated session clear/redirect.</p>
+        <div class="admin-panel">
+          <label class="muted">Paste HTML / iframe snippet here:</label>
+          <textarea id="adminCode" placeholder="Paste iframe or small HTML snippet (e.g. &lt;iframe src='https://...'&gt;&lt;/iframe&gt;)"></textarea>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button id="previewBtn" class="small">Preview in sandbox</button>
+            <button id="injectBtn" class="small">Inject to student view</button>
+            <button id="clearInjected" class="small" style="background:#eee;color:#111">Clear injected</button>
+          </div>
+
+          <div style="margin-top:8px">
+            <div class="muted" style="margin-bottom:6px">Sandbox preview (safe):</div>
+            <div class="previewWrap">
+              <!-- sandboxed iframe: note security -->
+              <iframe id="previewIframe" style="width:100%;height:260px;border:0" sandbox="allow-scripts allow-forms"></iframe>
+            </div>
+          </div>
+
+          <div style="margin-top:10px">
+            <div class="btn-row">
+              <button id="selfDestructBtn" style="background:var(--danger);color:#fff">Simulate Clear & Redirect</button>
+            </div>
+            <p class="muted" style="font-size:.85rem;margin-top:6px">(This clears the page locally and redirects — simulated teacher action.)</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <footer><p class="muted">Oak Grove School • ELA Dept.</p></footer>
+  </div>
+</div>
+
+<!-- Admin login button (appears after passcode success) -->
+<button id="adminBtn" title="Admin login" style="display:none;position:fixed;top:16px;right:16px;padding:8px;border-radius:8px;border:1px solid rgba(15,23,42,.06);background:white;color:var(--accent);font-weight:700">Admin</button>
+
+<script>
+/* -------- CONFIG -------- */
+const PASSCODE = "friends";        // student passcode
+const ADMIN_KEY = "onlyme123";     // admin key (change this)
+const REDIRECT_URL = "https://www.school-homepage.example/"; // where to go after simulated clear
+/* ------------------------ */
+
+/* Elements */
+const passInput = document.getElementById('pass');
+const enterBtn = document.getElementById('enterBtn');
+const helpBtn = document.getElementById('helpBtn');
+const passMsg = document.getElementById('passMsg');
+const content = document.getElementById('content');
+const adminBtn = document.getElementById('adminBtn');
+const secretDiv = document.getElementById('secretButtonDiv');
+const previewBtn = document.getElementById('previewBtn');
+const injectBtn = document.getElementById('injectBtn');
+const clearInjected = document.getElementById('clearInjected');
+const adminCode = document.getElementById('adminCode');
+const previewIframe = document.getElementById('previewIframe');
+const selfDestructBtn = document.getElementById('selfDestructBtn');
+
+/* PASSCODE logic */
+enterBtn.addEventListener('click', tryPasscode);
+passInput.addEventListener('keyup', (e) => { if(e.key==='Enter') tryPasscode(); });
+helpBtn.addEventListener('click', ()=> alert('Ask your teacher for the class passcode or use a classroom device.'));
+
+function tryPasscode(){
+  const v = passInput.value.trim();
+  if(v === PASSCODE){
+    passMsg.textContent = "";
+    document.getElementById('passbox').style.display = 'none';
+    content.style.display = 'block';
+    adminBtn.style.display = 'inline-block';
+    document.body.style.background = 'linear-gradient(180deg,#f0fdf4,#eef2ff)';
+    content.setAttribute('aria-hidden','false');
+  } else {
+    passMsg.textContent = "Incorrect passcode.";
+  }
+}
+
+/* ADMIN flow: visible only after passcode success */
+adminBtn.addEventListener('click', ()=>{
+  const k = prompt("Enter teacher/admin key:");
+  if(!k) return;
+  if(k === ADMIN_KEY){
+    secretDiv.style.display = 'block';
+    adminBtn.textContent = "Admin ✓";
+    adminBtn.disabled = true;
+    alert("Admin access granted.");
+  } else {
+    alert("Admin key incorrect.");
+  }
+});
+
+/* OPEN ARCADE — student-friendly popup */
+function openArcade(){
+  const html = `
+    <html><head><title>Activities</title></head>
+    <body style="font-family:Arial,Helvetica,sans-serif;padding:22px">
+      <h2>Student Activities</h2>
+      <ul>
+        <li><a href="https://poxel.io/" target="_blank">Poxel.io</a></li>
+        <li><a href="https://www.crazygames.com/t/driving" target="_blank">Driving Games</a></li>
+        <li><a href="https://www.roblox.com/games" target="_blank">Roblox</a></li>
+      </ul>
+      <p><em>Close this window to return.</em></p>
+    </body></html>`;
+  const w = window.open("", "_blank", "width=900,height=700");
+  w.document.write(html); w.document.close();
+}
+
+/* ===== mini-games (TicTacToe + RPS) ===== */
+let tttBoard = Array(9).fill('');
+let xTurn = true;
+const tttBoardEl = document.getElementById('ticTacToeBoard');
+const resetTttBtn = document.getElementById('resetTttBtn');
+
+function renderTtt(){
+  tttBoardEl.innerHTML = '';
+  for(let i=0;i<9;i++){
+    const btn = document.createElement('button');
+    btn.textContent = tttBoard[i];
+    btn.addEventListener('click', () => {
+      if(!tttBoard[i]){
+        tttBoard[i] = xTurn ? 'X' : 'O';
+        xTurn = !xTurn;
+        renderTtt();
+        checkTttWinner();
+      }
+    });
+    tttBoardEl.appendChild(btn);
+  }
+}
+resetTttBtn.addEventListener('click', ()=>{ tttBoard = Array(9).fill(''); xTurn=true; renderTtt(); });
+function checkTttWinner(){
+  const combos = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  for(const [a,b,c] of combos){
+    if(tttBoard[a] && tttBoard[a] === tttBoard[b] && tttBoard[a] === tttBoard[c]){
+      setTimeout(()=>alert(\`\${tttBoard[a]} wins!\`),50);
+      setTimeout(()=>{ tttBoard = Array(9).fill(''); xTurn=true; renderTtt(); },100);
+      return;
+    }
+  }
+}
+renderTtt();
+
+function playRPS(user){
+  const choices = ['rock','paper','scissors'];
+  const comp = choices[Math.floor(Math.random()*3)];
+  let result = '';
+  if(user === comp) result = "It's a tie!";
+  else if((user==='rock'&&comp==='scissors')||(user==='paper'&&comp==='rock')||(user==='scissors'&&comp==='paper')) result="You win!";
+  else result = "You lose!";
+  document.getElementById('rpsResult').textContent = \`Computer chose \${comp}. \${result}\`;
+}
+
+/* ===== Admin code preview & inject =====
+   - previewBtn: writes the pasted snippet into the sandboxed iframe for safe preview.
+   - injectBtn: appends the snippet into the main content area (visible to students).
+   Security note: preview iframe uses sandbox without allow-same-origin to limit cross-origin access.
+*/
+previewBtn.addEventListener('click', ()=>{
+  const code = adminCode.value || "<div style='padding:12px;color:#111'>No code provided</div>";
+  // For preview, create a blob and set iframe srcdoc for safer isolation
+  try {
+    previewIframe.srcdoc = code;
+  } catch(e){
+    previewIframe.src = "about:blank";
+    console.warn("Preview failed:", e);
+  }
+});
+
+injectBtn.addEventListener('click', ()=>{
+  const code = adminCode.value || "";
+  if(!code.trim()){ alert("Paste HTML/iframe code first."); return; }
+  // Create a wrapper div (unsafe code inserted — admin action)
+  const wrapper = document.createElement('div');
+  wrapper.style.marginTop = '12px';
+  wrapper.innerHTML = code;
+  // Append to content (teacher is responsible for safety)
+  content.appendChild(wrapper);
+  alert("Injected into student view (visible to anyone who unlocked).");
+});
+
+clearInjected.addEventListener('click', ()=>{
+  if(!confirm("Remove injected content from the page?")) return;
+  // removes last injected element(s) appended to content (simple approach)
+  // NOTE: this will only remove elements appended via injectBtn during this session.
+  // For safety we will remove nodes appended after the initial grid (rough heuristic).
+  const nodes = Array.from(content.childNodes);
+  // remove nodes appended late (after the grid), simple and conservative:
+  for(let i = content.childNodes.length-1; i>=0; i--){
+    const n = content.childNodes[i];
+    // stop when reaching the grid element (first .grid)
+    if(n.classList && n.classList.contains && n.classList.contains('grid')) break;
+    content.removeChild(n);
+  }
+  alert("Cleared injected content from this session view.");
+});
+
+/* ===== Admin: Simulated Clear & Redirect ===== */
+selfDestructBtn.addEventListener('click', ()=>{
+  if(!confirm("Teacher action: clear session and redirect to school home? Continue?")) return;
+  document.body.innerHTML = '';
+  document.body.style.background = '#fff';
+  const m = document.createElement('div');
+  m.style.textAlign='center'; m.style.marginTop='12vh';
+  m.innerHTML = "<h1>Session cleared</h1><p>Redirecting to school homepage...</p>";
+  document.body.appendChild(m);
+  setTimeout(()=>{ window.location.href = REDIRECT_URL; }, 1800);
+});
+
+/* Accessibility helper */
+passInput.addEventListener('keyup', (e)=>{ if(e.key==='Enter') tryPasscode(); });
+</script>
+</body>
+</html>
